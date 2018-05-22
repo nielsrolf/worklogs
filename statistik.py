@@ -3,18 +3,23 @@ from matplotlib import pyplot as plt
 from datetime import datetime, timedelta
 import pdb
 
+import os
+
 # read when I worked at what projects, shows some statistics
 # plot over days/weeks/months: how much have i worked on each project / total
 # plot over time: weighted average on what I worked
 # day average: how much do i work on what
 
 def read_statistic():
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+
     # creates a dict of changetimes, that contains for each project
     # a list of times where I changed the work status
     # first entry is a start time
     changetimes = {"total": []} # project -> list of timestamps
     working_on = None
-    with open('/home/niels/Dokumente/Arbeiten/statistik.csv', 'r') as file:
+    with open(os.path.join(dir_path, 'statistik.csv'), 'r') as file:
         reader = csv.reader(file, delimiter=",")
         for time_str, action, project in reader:
             time = datetime.strptime(time_str, "%m/%d/%y %H:%M:%S")
@@ -82,6 +87,9 @@ def plot_day_average(changetimes, start):
     pass
 
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
+
 changetimes = read_statistic()
 
 intervals = {
@@ -101,7 +109,9 @@ for interval_name in ["second", "minute", "day", "week", "months"]:
     for project in changetimes:
         plot_total(changetimes[project], project, interval, start, end, ax)
     plt.legend()
-    plt.savefig("/home/niels/Dokumente/Arbeiten/workstats/{}-total.png".format(interval_name))
+
+
+    plt.savefig(os.path.join(dir_path, "{}-total.png".format(interval_name)))
     plt.show()
     plt.close('all')
 
